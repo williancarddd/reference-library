@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Discipline } from "@/shared/types/disciplineType"
 import { disciplineSchema } from "@/store/discipline.store"
+import { useParams } from "next/navigation"
 
 interface DisciplineFormProps {
   onSubmit: (data: Discipline) => void;
@@ -30,7 +31,7 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
       courseId: 0,
     },
   });
-
+  console.log('errors', form.formState.errors);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -54,7 +55,12 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
             <FormItem>
               <FormLabel>Carga Horária</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="120" {...field} />
+                <Input
+                  type="number"
+                  placeholder="120"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,20 +73,12 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
             <FormItem>
               <FormLabel>Period</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="1" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="courseId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Course ID</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="1" {...field} />
+                <Input
+                  type="number"
+                  placeholder="1"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

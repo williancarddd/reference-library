@@ -10,10 +10,10 @@ import { DisciplineTable } from "@/components/Discipline/discipline-table"
 import DisciplineModal from "@/components/Discipline/discipline-modal"
 
 const DisciplinesPage = () => {
-  
+
   const { courseId } = useParams()
 
-  
+
 
   const [isDisciplineModalOpen, setIsDisciplineModalOpen] = React.useState(false)
   const [selectedDiscipline, setSelectedDiscipline] = React.useState<Discipline | null>(null)
@@ -32,11 +32,15 @@ const DisciplinesPage = () => {
   }
 
   const handleDisciplineSubmit = async (discipline: Discipline) => {
+    console.log(discipline)
     try {
       if (selectedDiscipline) {
         await updateDisciplineMutation.mutateAsync(discipline)
       } else {
-        await createDisciplineMutation.mutateAsync(discipline)
+        await createDisciplineMutation.mutateAsync({
+          ...discipline,
+          courseId: Number(courseId),
+        })
       }
       handleDisciplineModalClose()
     } catch (error) {

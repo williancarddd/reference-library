@@ -10,11 +10,10 @@ const disciplineSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   cargaHoraria: z.number().min(1, { message: "Carga Horária is required." }),
   period: z.number().min(1, { message: "Period is required." }),
-  courseId: z.number().min(1, { message: "Course ID is required." }),
+  courseId: z.number({ message: "Course ID is required." }),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
-
 
 
 type DisciplineState = {
