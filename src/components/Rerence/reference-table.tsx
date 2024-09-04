@@ -27,40 +27,62 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { MoreHorizontal } from "lucide-react"
-import { Discipline } from "@/shared/types/disciplineType"
 import { Reference } from "@/shared/types/referenceType"
-import ReferenceModal from "../Rerence/reference-modal"
 
-export type DisciplineTableProps = {
-  data: Discipline[]
-  onEdit: (discipline: Discipline) => void
+export type ReferenceTableProps = {
+  data: Reference[]
+  onEdit: (reference: Reference) => void
   onDelete: (id: number) => void
 }
 
 const generateColumns = (
-  onEdit: (discipline: Discipline) => void,
-  onDelete: (id: number) => void,
-  onViewReferences: (discipline: Discipline) => void
-): ColumnDef<Discipline>[] => [
+  onEdit: (reference: Reference) => void,
+  onDelete: (id: number) => void
+): ColumnDef<Reference>[] => [
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    accessorKey: "title",
+    header: "Title",
+    cell: ({ row }) => <div>{row.getValue("title")}</div>,
   },
   {
-    accessorKey: "cargaHoraria",
-    header: "Carga Horária",
-    cell: ({ row }) => <div>{row.getValue("cargaHoraria")} horas</div>,
+    accessorKey: "authors",
+    header: "Authors",
+    cell: ({ row }) => <div>{row.getValue("authors")}</div>,
   },
   {
-    accessorKey: "period",
-    header: "Período",
-    cell: ({ row }) => <div>{row.getValue("period")}</div>,
+    accessorKey: "year",
+    header: "Year",
+    cell: ({ row }) => <div>{row.getValue("year")}</div>,
+  },
+  {
+    accessorKey: "edition",
+    header: "Edition",
+    cell: ({ row }) => <div>{row.getValue("edition") || "N/A"}</div>,
+  },
+  {
+    accessorKey: "publisher",
+    header: "Publisher",
+    cell: ({ row }) => <div>{row.getValue("publisher") || "N/A"}</div>,
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => <div>{row.getValue("type")}</div>,
+  },
+  {
+    accessorKey: "courseId",
+    header: "Course ID",
+    cell: ({ row }) => <div>{row.getValue("courseId")}</div>,
+  },
+  {
+    accessorKey: "disciplineId",
+    header: "Discipline ID",
+    cell: ({ row }) => <div>{row.getValue("disciplineId")}</div>,
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const discipline = row.original
+      const reference = row.original
 
       return (
         <DropdownMenu>
@@ -72,14 +94,11 @@ const generateColumns = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(discipline)}>
+            <DropdownMenuItem onClick={() => onEdit(reference)}>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onViewReferences(discipline)}>
-              View References
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onDelete(discipline.id as number)}>Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onDelete(reference.id as number)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -87,32 +106,12 @@ const generateColumns = (
   },
 ]
 
-export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps) {
+export function ReferenceTable({ data, onEdit, onDelete }: ReferenceTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [selectedDiscipline, setSelectedDiscipline] = React.useState<Discipline | null>(null)
-  const [isReferenceModalOpen, setIsReferenceModalOpen] = React.useState(false)
-  const [references, setReferences] = React.useState<Reference[]>([]) // State to hold the references
 
   const table = useReactTable({
     data,
-    columns: generateColumns(onEdit, onDelete, (discipline: Discipline) => {
-      setSelectedDiscipline(discipline)
-      setIsReferenceModalOpen(true)
-      // Fetch references based on the discipline (mocked for now)
-      setReferences([
-        {
-          id: 1,
-          title: "Introduction to Algorithms",
-          authors: "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
-          year: 2009,
-          edition: 3,
-          publisher: "MIT Press",
-          type: "mandatory",
-          courseId: discipline.courseId,
-          disciplineId: discipline!.id as number,
-        }
-      ])
-    }),
+    columns: generateColumns(onEdit, onDelete),
     state: {
       sorting,
     },
@@ -147,7 +146,7 @@ export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={generateColumns(onEdit, onDelete, () => {}).length} className="h-24 text-center">
+                <TableCell colSpan={generateColumns(onEdit, onDelete).length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -155,15 +154,6 @@ export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps
           </TableBody>
         </Table>
       </div>
-      <ReferenceModal
-        isOpen={isReferenceModalOpen}
-        onClose={() => setIsReferenceModalOpen(false)}
-        onSubmit={(e) => { console.log(e)}} // Handle reference submission if needed
-        defaultValues={null}
-        references={references}
-        onEdit={() => {}} // Handle edit references
-        onDelete={() => {}} // Handle delete references
-      />
     </div>
   )
 }

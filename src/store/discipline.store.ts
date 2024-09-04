@@ -10,14 +10,13 @@ const disciplineSchema = z.object({
   cargaHoraria: z.number().optional(),
   period: z.number().min(1, { message: "Period is required." }),
   courseId: z.number({ message: "Course ID is required." }),
-  theoreticalHours: z.number().min(1, { message: "Theoretical Hours is required." }),
-  practicalHours: z.number().min(1, { message: "Practical Hours is required." }),
+  theoreticalHours: z.number().default(0),
+  practicalHours: z.number().default(0),
 })
   .transform((data) => {
     return {
       ...data,
       cargaHoraria: data.practicalHours + data.theoreticalHours,
-
     }
   });
 

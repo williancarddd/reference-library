@@ -1,17 +1,8 @@
 import api from '@/lib/axios';
+import { PaginatedResponse } from '@/shared/interfaces/paginate';
 import { Discipline } from '@/shared/types/disciplineType';
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    total: number;
-    lastPage: number;
-    currentPage: number;
-    perPage: number;
-    prev: number | null;
-    next: number | null;
-  };
-}
+
 
 export const getDisciplines = async (courseId: number, page: number, perPage: number): Promise<PaginatedResponse<Discipline>> => {
   const response = await api.get(`/discipline?page=${page}&perPage=${perPage}&courseId=${courseId}`);
