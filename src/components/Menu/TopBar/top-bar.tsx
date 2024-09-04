@@ -18,6 +18,11 @@ const TopBar = () => {
                 Courses
               </Link>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link className="text-white hover:underline" href="/reports">
+                Reports
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>

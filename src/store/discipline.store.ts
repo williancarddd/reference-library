@@ -1,4 +1,3 @@
-
 import create from 'zustand';
 import { z } from 'zod';
 import { getDisciplines, createDiscipline, updateDiscipline, deleteDiscipline } from '@/services/disciplines-service';
@@ -8,13 +7,19 @@ import { Discipline } from '@/shared/types/disciplineType';
 const disciplineSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, { message: "Name is required." }),
-  cargaHoraria: z.number().min(1, { message: "Carga Horária is required." }),
+  cargaHoraria: z.number().optional(),
   period: z.number().min(1, { message: "Period is required." }),
   courseId: z.number({ message: "Course ID is required." }),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
-});
+  theoreticalHours: z.number().min(1, { message: "Theoretical Hours is required." }),
+  practicalHours: z.number().min(1, { message: "Practical Hours is required." }),
+})
+  .transform((data) => {
+    return {
+      ...data,
+      cargaHoraria: data.practicalHours + data.theoreticalHours,
 
+    }
+  });
 
 type DisciplineState = {
   disciplines: Discipline[];

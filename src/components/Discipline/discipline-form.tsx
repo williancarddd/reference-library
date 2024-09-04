@@ -26,12 +26,14 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
     resolver: zodResolver(disciplineSchema),
     defaultValues: defaultValues || {
       name: "",
-      cargaHoraria: 0,
       period: 0,
       courseId: 0,
+      theoreticalHours: 0,
+      practicalHours: 0,
     },
   });
-  console.log('errors', form.formState.errors);
+  // errors 
+  console.log(form.formState.errors);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -50,14 +52,14 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
         />
         <FormField
           control={form.control}
-          name="cargaHoraria"
+          name="period"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Carga Horária</FormLabel>
+              <FormLabel>Period</FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="120"
+                  placeholder="1"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
@@ -68,10 +70,28 @@ export function DisciplineForm({ onSubmit, defaultValues }: DisciplineFormProps)
         />
         <FormField
           control={form.control}
-          name="period"
+          name="practicalHours"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Period</FormLabel>
+              <FormLabel>Pratical Hours</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="1"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="theoreticalHours"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Theorical Hours</FormLabel>
               <FormControl>
                 <Input
                   type="number"

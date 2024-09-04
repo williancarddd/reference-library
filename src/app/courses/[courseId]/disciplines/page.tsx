@@ -13,8 +13,6 @@ const DisciplinesPage = () => {
 
   const { courseId } = useParams()
 
-
-
   const [isDisciplineModalOpen, setIsDisciplineModalOpen] = React.useState(false)
   const [selectedDiscipline, setSelectedDiscipline] = React.useState<Discipline | null>(null)
   const [page, setPage] = React.useState(1)
