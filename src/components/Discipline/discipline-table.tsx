@@ -30,11 +30,13 @@ import { MoreHorizontal } from "lucide-react"
 import { Discipline } from "@/shared/types/disciplineType"
 import { Reference } from "@/shared/types/referenceType"
 import ReferenceModal from "../Rerence/reference-modal"
+import { useReferenceStore } from "@/store/references.store"
 
 export type DisciplineTableProps = {
   data: Discipline[]
   onEdit: (discipline: Discipline) => void
   onDelete: (id: number) => void
+  courseId: number
 }
 
 const generateColumns = (
@@ -42,76 +44,72 @@ const generateColumns = (
   onDelete: (id: number) => void,
   onViewReferences: (discipline: Discipline) => void
 ): ColumnDef<Discipline>[] => [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "cargaHoraria",
-    header: "Carga Horária",
-    cell: ({ row }) => <div>{row.getValue("cargaHoraria")} horas</div>,
-  },
-  {
-    accessorKey: "period",
-    header: "Período",
-    cell: ({ row }) => <div>{row.getValue("period")}</div>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const discipline = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onEdit(discipline)}>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onViewReferences(discipline)}>
-              View References
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onDelete(discipline.id as number)}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
-  },
-]
+    {
+      accessorKey: "cargaHoraria",
+      header: "Carga Horária",
+      cell: ({ row }) => <div>{row.getValue("cargaHoraria")} horas</div>,
+    },
+    {
+      accessorKey: "period",
+      header: "Período",
+      cell: ({ row }) => <div>{row.getValue("period")}</div>,
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const discipline = row.original
 
-export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => onEdit(discipline)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onViewReferences(discipline)}>
+                View References
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onDelete(discipline.id as number)}>Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
+export function DisciplineTable({ data, onEdit, onDelete, courseId }: DisciplineTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [selectedDiscipline, setSelectedDiscipline] = React.useState<Discipline | null>(null)
   const [isReferenceModalOpen, setIsReferenceModalOpen] = React.useState(false)
-  const [references, setReferences] = React.useState<Reference[]>([]) // State to hold the references
+  const {
+    createReference,
+    fetchReferences,
+    deleteReference,
+    updateReference,
+    references,
+    getReferenceById,
+    selectReference,
+    selectedReference } = useReferenceStore()
 
   const table = useReactTable({
     data,
-    columns: generateColumns(onEdit, onDelete, (discipline: Discipline) => {
+    columns: generateColumns(onEdit, onDelete, async (discipline: Discipline) => {
       setSelectedDiscipline(discipline)
       setIsReferenceModalOpen(true)
       // Fetch references based on the discipline (mocked for now)
-      setReferences([
-        {
-          id: 1,
-          title: "Introduction to Algorithms",
-          authors: "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
-          year: 2009,
-          edition: 3,
-          publisher: "MIT Press",
-          type: "mandatory",
-          courseId: discipline.courseId,
-          disciplineId: discipline!.id as number,
-        }
-      ])
+      await fetchReferences(1, 10, discipline.id as number)
     }),
     state: {
       sorting,
@@ -147,7 +145,7 @@ export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={generateColumns(onEdit, onDelete, () => {}).length} className="h-24 text-center">
+                <TableCell colSpan={generateColumns(onEdit, onDelete, () => { }).length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -158,11 +156,30 @@ export function DisciplineTable({ data, onEdit, onDelete }: DisciplineTableProps
       <ReferenceModal
         isOpen={isReferenceModalOpen}
         onClose={() => setIsReferenceModalOpen(false)}
-        onSubmit={(e) => { console.log(e)}} // Handle reference submission if needed
-        defaultValues={null}
+        onSubmit={async (data) => {
+          console.log(data)
+          if (selectedReference) {
+            await updateReference(selectedReference.id as number, data)
+            selectReference(null)
+          } else {
+            await createReference({
+              ...data,
+              disciplineId: selectedDiscipline?.id,
+              courseId,
+            })
+          }
+        }}
+        defaultValues={selectedReference}
         references={references}
-        onEdit={() => {}} // Handle edit references
-        onDelete={() => {}} // Handle delete references
+        onEdit={(reference: Reference) => {
+          getReferenceById(reference.id as number)
+          setSelectedDiscipline(null)
+          setIsReferenceModalOpen(true)
+        }}
+        onDelete={async (id: number) => {
+          await deleteReference(id)
+        }
+        }
       />
     </div>
   )

@@ -1,11 +1,11 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { z } from 'zod';
 import {
   getReferences,
   createReference,
   updateReference,
   deleteReference,
-  getReferenceById,
+  getReference
 } from '@/services/references-service';
 import { Reference } from '@/shared/types/referenceType';
 
@@ -17,9 +17,9 @@ const referenceSchema = z.object({
   year: z.number().optional(),
   edition: z.number().optional(),
   publisher: z.string().optional(),
-  type: z.enum(['mandatory', 'optional'], { message: "Type is required." }),
-  courseId: z.number({ message: "Course ID is required." }),
-  disciplineId: z.number({ message: "Discipline ID is required." }),
+  type: z.enum(['mandatory', 'complementary'], { message: "Type is required." }),
+  courseId: z.number({ message: "Course ID is required." }).optional(),
+  disciplineId: z.number({ message: "Discipline ID is required." }).optional(),
 });
 
 
@@ -32,7 +32,7 @@ type ReferenceState = {
   createReference: (reference: Reference) => Promise<void>;
   updateReference: (id: number, reference: Reference) => Promise<void>;
   deleteReference: (id: number) => Promise<void>;
-  getReference: (id: number) => Promise<void>;
+  getReferenceById: (id: number) => Promise<void>;
   selectReference: (reference: Reference | null) => void;
 };
 
@@ -88,10 +88,10 @@ const useReferenceStore = create<ReferenceState>((set) => ({
     }
   },
 
-  getReference: async (id: number) => {
+  getReferenceById: async (id: number) => {
     set({ loading: true, error: null });
     try {
-      const reference = await getReferenceById(id);
+      const reference = await getReference(id);
       set({ selectedReference: reference, loading: false });
     } catch (error) {
       set({ error: 'Failed to fetch reference', loading: false });

@@ -70,7 +70,7 @@ const DisciplinesPage = () => {
       ) : isError ? (
         <div>Error loading disciplines.</div>
       ) : (
-        <DisciplineTable data={data?.data || []} onEdit={handleDisciplineEdit} onDelete={handleDisciplineDelete} />
+        <DisciplineTable data={data?.data || []} onEdit={handleDisciplineEdit} onDelete={handleDisciplineDelete} courseId={Number(courseId)} />
       )}
       <DisciplineModal
         isOpen={isDisciplineModalOpen}

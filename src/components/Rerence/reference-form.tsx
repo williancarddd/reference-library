@@ -25,16 +25,7 @@ interface ReferenceFormProps {
 export function ReferenceForm({ onSubmit, defaultValues }: ReferenceFormProps) {
   const form = useForm<Reference>({
     resolver: zodResolver(referenceSchema),
-    defaultValues: defaultValues || {
-      title: "",
-      authors: "",
-      year: undefined,
-      edition: undefined,
-      publisher: "",
-      type: "mandatory",
-      courseId: 3,
-      disciplineId: 3,
-    },
+    defaultValues: defaultValues!,
   });
 
   // Atualiza os valores do formulário quando defaultValues mudarem
@@ -129,18 +120,18 @@ export function ReferenceForm({ onSubmit, defaultValues }: ReferenceFormProps) {
             <FormItem>
               <FormLabel>Tipo</FormLabel>
               <FormControl>
-              <Select
-                {...field}
-                >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="mandatory">Obrigatória</SelectItem>
-                  <SelectItem value="complementary">Complementar</SelectItem>
-                </SelectContent>
-              </Select>
-              
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger >
+                    <SelectValue placeholder="Select a type">
+                      {field.value}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mandatory">Obrigatória</SelectItem>
+                    <SelectItem value="complementary">Complementar</SelectItem>
+                  </SelectContent>
+                </Select>
+
               </FormControl>
               <FormMessage />
             </FormItem>

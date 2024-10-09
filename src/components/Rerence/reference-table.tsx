@@ -70,20 +70,9 @@ const generateColumns = (
     cell: ({ row }) => <div>{row.getValue("type")}</div>,
   },
   {
-    accessorKey: "courseId",
-    header: "Course ID",
-    cell: ({ row }) => <div>{row.getValue("courseId")}</div>,
-  },
-  {
-    accessorKey: "disciplineId",
-    header: "Discipline ID",
-    cell: ({ row }) => <div>{row.getValue("disciplineId")}</div>,
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
       const reference = row.original
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

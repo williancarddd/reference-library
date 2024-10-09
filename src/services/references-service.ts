@@ -3,7 +3,7 @@ import { PaginatedResponse } from "@/shared/interfaces/paginate";
 import { Reference } from "@/shared/types/referenceType";
 
 // Serviço para criar uma referência
-export const createReference = async (reference: Reference) => {
+export async  function createReference(reference: Reference): Promise<Reference> {
   try {
     const response = await api.post("/reference", reference);
     return response.data;
@@ -13,7 +13,7 @@ export const createReference = async (reference: Reference) => {
 };
 
 // Serviço para buscar referências paginadas por disciplina
-export const getReferences = async (page: number, perPage: number, disciplineId: number) => {
+export async function getReferences(page: number, perPage: number, disciplineId: number): Promise<PaginatedResponse<Reference>> {
   try {
     const response = await api.get<PaginatedResponse<Reference>>(`/reference?page=${page}&perPage=${perPage}&disciplineId=${disciplineId}`);
     return response.data;
@@ -23,7 +23,7 @@ export const getReferences = async (page: number, perPage: number, disciplineId:
 };
 
 // Serviço para buscar uma referência por ID
-export const getReferenceById = async (id: number) => {
+export async function getReference(id: number): Promise<Reference> {
   try {
     const response = await api.get(`/reference/${id}`);
     return response.data;
@@ -33,7 +33,7 @@ export const getReferenceById = async (id: number) => {
 };
 
 // Serviço para atualizar uma referência
-export const updateReference = async (id: number, reference: Reference) => {
+export async function updateReference(id: number, reference: Reference): Promise<Reference> {
   try {
     const response = await api.put(`/reference/${id}`, reference);
     return response.data;
@@ -43,7 +43,7 @@ export const updateReference = async (id: number, reference: Reference) => {
 };
 
 // Serviço para deletar uma referência
-export const deleteReference = async (id: number) => {
+export async function deleteReference(id: number): Promise<void> {
   try {
     const response = await api.delete(`/reference/${id}`);
     return response.data;
