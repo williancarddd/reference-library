@@ -21,25 +21,29 @@ const TopBar = () => {
             Análise de Referências
           </div>
 
-          {/* MENU + BOTÃO */}
           <div className="flex items-center space-x-8">
             <NavigationMenu>
               <NavigationMenuList className="flex space-x-8">
                 <NavigationMenuItem>
-                  <Link className="text-white hover:underline" href="/courses">
+                  <Link
+                    href="/courses"
+                    className="text-white hover:underline"
+                  >
                     Courses
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link className="text-white hover:underline" href="/reports">
-                    Reports
+                  <Link
+                    href="/dashboard"
+                    className="text-white hover:underline"
+                  >
+                    Dashboard
                   </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
 
-            {/* BOTÃO FORA DO NavigationMenu */}
             <button
               onClick={() => setOpen(true)}
               className="text-white font-semibold hover:underline"
