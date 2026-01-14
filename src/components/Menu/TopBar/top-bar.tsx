@@ -15,7 +15,10 @@ const TopBar = () => {
 
   return (
     <>
-      <div className="bg-gray-800 p-4 flex justify-between items-center relative z-10">
+      <div
+        className="bg-gray-800 p-4 flex justify-between items-center relative z-[9999]"
+        style={{ pointerEvents: "auto" }}
+      >
         <div className="flex items-center space-x-16 mx-36">
           <div className="text-white font-bold text-lg mr-8">
             Análise de Referências
@@ -39,9 +42,8 @@ const TopBar = () => {
             </NavigationMenu>
 
             <button
-              onClick={() => {
-                setOpen(true)
-              }}
+              onClick={() => setOpen(true)}
+              style={{ pointerEvents: "auto" }}
               className="text-white font-semibold hover:underline"
             >
               IMPORTAR PPC
