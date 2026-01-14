@@ -15,7 +15,7 @@ const TopBar = () => {
 
   return (
     <>
-      <div className="bg-gray-800 p-4 flex justify-between items-center">
+      <div className="bg-gray-800 p-4 flex justify-between items-center relative z-10">
         <div className="flex items-center space-x-16 mx-36">
           <div className="text-white font-bold text-lg mr-8">
             Análise de Referências
@@ -25,19 +25,13 @@ const TopBar = () => {
             <NavigationMenu>
               <NavigationMenuList className="flex space-x-8">
                 <NavigationMenuItem>
-                  <Link
-                    href="/courses"
-                    className="text-white hover:underline"
-                  >
+                  <Link href="/courses" className="text-white hover:underline">
                     Courses
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link
-                    href="/dashboard"
-                    className="text-white hover:underline"
-                  >
+                  <Link href="/dashboard" className="text-white hover:underline">
                     Dashboard
                   </Link>
                 </NavigationMenuItem>
@@ -45,7 +39,9 @@ const TopBar = () => {
             </NavigationMenu>
 
             <button
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setOpen(true)
+              }}
               className="text-white font-semibold hover:underline"
             >
               IMPORTAR PPC
